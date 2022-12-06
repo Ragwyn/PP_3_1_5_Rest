@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 import ru.kata.spring.boot_security.demo.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,20 +13,20 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
+    @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
-
     @GetMapping("/")
-    public String index() {
-
-        return "index";
+    public String index(Model model) {
+        return "redirect:/login";
     }
 
     @GetMapping("/user")
     public String user(Model model, Principal principal) {
-        model.addAttribute("Users", List.of(userService.findUserByUsername(principal.getName())));
-        return "user";
+        model.addAttribute("Users", List.of(userService.findUserByUserName(principal.getName())));
+        model.addAttribute("user", userService.findUserByUserName(principal.getName()));
+        return "mainPage";
     }
 }

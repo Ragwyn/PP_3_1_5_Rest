@@ -2,6 +2,9 @@ package ru.kata.spring.boot_security.demo.controller;
 
 import ru.kata.spring.boot_security.demo.service.UserService;
 import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.model.Role;
+import ru.kata.spring.boot_security.demo.service.RoleServiceInterface;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,58 +12,53 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
     private final UserService userService;
+    private final RoleServiceInterface roleService;
 
     @Autowired
-    public AdminController(UserService userService) {
+    public AdminController(UserService userService, RoleServiceInterface roleService) {
         this.userService = userService;
+        this.roleService = roleService;
     }
 
     @GetMapping("/")
     public String admin(Model model, Principal principal) {
-        List<User> list = userService.findAllUsers();
+        List<User> list = userService.findAll();
         model.addAttribute("Users", list);
-        return "user";
+        model.addAttribute("roles", roleService.findAll());
+        model.addAttribute("user", userService.findUserByUserName(principal.getName()));
+        model.addAttribute("newUser", new User());
+        return "mainPage";
     }
 
-    @GetMapping(value = "/new")
-    public String addUser(Model model) {
-        String role = "test";
-        model.addAttribute("user", new User());
-        model.addAttribute("Role", role);
-        return "create";
-    }
-
-    @PostMapping(value = "/new")
+    @PostMapping(value = "/add")
     @Transactional
-    public String addNewUser(@ModelAttribute("newUser") User user) {
-        userService.add(user);
+    public String addNewUser(@ModelAttribute("newUser") User user, @RequestParam(value = "userRole", required = false) ArrayList<Role> roles) {
+        user.setRoles(new HashSet<>(roles));
+        userService.save(user);
         return "redirect:/admin/";
     }
 
-    @GetMapping("/edit/{id}")
+    @PostMapping(value = "/edit/{id}")
     @Transactional
-    public String edit(@PathVariable("id") long id, Model model){
-        User user = userService.findUserById(id).get();
-        model.addAttribute("user", user);
-        return "edit";
-    }
-
-    @PostMapping("/edit/")
-    @Transactional
-    public String edit(@ModelAttribute("user") User user) {
+    public String editUser(@PathVariable(name = "id") long id, @ModelAttribute(value = "user") User user,
+                           @RequestParam(value = "userRole", required = false) ArrayList<Role> roles) {
+        user.setRoles(new HashSet<>(roles));
         userService.edit(user);
         return "redirect:/admin/";
     }
 
-    @RequestMapping("/delete/{id}")
-    public String delete(@PathVariable("id") int id){
-        userService.delete(id);
+    @PostMapping(value = "/delete/{id}")
+    public String remove(@PathVariable(name = "id") long id) {
+        userService.remove(id);
         return "redirect:/admin/";
     }
+
 }

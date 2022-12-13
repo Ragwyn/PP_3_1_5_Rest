@@ -1,158 +1,155 @@
 package ru.kata.spring.boot_security.demo.model;
 
-import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.List;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Component
-@ToString
-//@Scope("session")
 @Entity
-@Table(name = "users")
+@Table(name = "user")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter
-    @Getter
+    @Column
     private long id;
-
-    @Column(nullable = true, unique = true)
-    @Setter
-    @Getter
-    @Size(min = 4, max = 20)
+    @Column(name = "name")
     private String username;
-
-    @Column(nullable = false)
-    @Size(min = 4, max = 20)
-    @Setter
-    @Getter
-    private String name;
-
-    @Column/*(nullable = false)*/
-    @Setter
-    @Getter
-    @Size(min = 4, max = 20)
+    @Column
     private String surname;
-
-    @Column/*(nullable = false)*/
-    @Setter
-    @Getter
+    @Column
     private int age;
-
-    @Column(unique = true)
-    @Setter
-    @Getter
-    private String email;
-
-    @Column(nullable = false)
-    @Setter
-    @Getter
-    @Size(min = 3)
+    @Column(name = "phone_number")
+    private String phoneNumber;
+    @Column
     private String password;
 
-    @Column()
-    @ColumnDefault(value = "true")
-    @Getter
-    @Setter
-    private Boolean accountNonExpired;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_role"
+            , joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id")
+            , inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    private List<Role> role;
 
-    @Column()
-    @ColumnDefault(value = "true")
-    @Getter
-    @Setter
-    private Boolean accountNonLocked;
+    public User() {
+    }
 
-    @Column()
-    @ColumnDefault(value = "true")
-    @Getter
-    @Setter
-    private Boolean credentialsNonExpired;
-
-    @Column()
-    @Getter
-    @Setter
-    @ColumnDefault(value = "true")
-    private Boolean enabled;
-
-    @Getter
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    private Set<Role> roles;
-
-    public User(String username, String name, String surname, int age, String email, String password, Boolean accountNonExpired, Boolean accountNonLocked, Boolean credentialsNonExpired, Boolean enabled, Set<Role> roles) {
+    public User(String username, String surname, int age, String phoneNumber) {
         this.username = username;
-        this.name = name;
         this.surname = surname;
         this.age = age;
-        this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
+
+    public User(String username, String surname, int age, String phoneNumber, String password) {
+        this.username = username;
+        this.surname = surname;
+        this.age = age;
+        this.phoneNumber = phoneNumber;
         this.password = password;
-        this.accountNonExpired = accountNonExpired;
-        this.accountNonLocked = accountNonLocked;
-        this.credentialsNonExpired = credentialsNonExpired;
-        this.enabled = enabled;
-        this.roles = roles;
+    }
+
+
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setUsername(String name) {
+        this.username = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     @Override
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public List<Role> getRole() {
+        return role;
+    }
+
+    public void setToRole(Role role) {
+        this.role.add(role);
+    }
+
+    public void setRole(List<Role> role) {
+        this.role = role;
+    }
+
+
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream().map(el -> new SimpleGrantedAuthority("ROLE_" + el.getAuthority())).collect(Collectors.toList());
+        return getRole();
+    }
+
+    @Override
+    public String getUsername() {
+        return this.username;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return accountNonExpired;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return accountNonLocked;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return credentialsNonExpired;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
-    public void setRoles(String roles) {
-        if (roles != null && !roles.isEmpty()) {
-            String[] arrayRoles = roles.split("[^A-Za-zФ-Яа-я0-9]");
-            if (arrayRoles.length != 0) {
-                Set<Role> roleSet = new HashSet<>();
-                Arrays.stream(arrayRoles).forEach(el -> roleSet.add(new Role(el)));
-                this.roles = roleSet;
-            } else {
-                this.roles = new HashSet<>();
-                this.roles.add(new Role(roles));
-            }
-
-        }
-
-    }
-
-    public String showPrettyViewOfRoles() {
-        return roles.stream().map(Role::getRole).collect(Collectors.joining(" | "));
+        return true;
     }
 
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + username + '\'' +
+                ", surname='" + surname + '\'' +
+                ", age=" + age +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }

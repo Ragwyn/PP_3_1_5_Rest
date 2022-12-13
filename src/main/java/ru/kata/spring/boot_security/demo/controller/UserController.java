@@ -1,32 +1,36 @@
 package ru.kata.spring.boot_security.demo.controller;
 
-import ru.kata.spring.boot_security.demo.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.service.UserServiceImp;
+import ru.kata.spring.boot_security.demo.util.UserValidator;
 
 import java.security.Principal;
-import java.util.List;
 
 @Controller
+@RequestMapping("/user")
 public class UserController {
-    private final UserService userService;
+    private final UserServiceImp userService;
+    private final UserValidator userValidator;
 
-    @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserServiceImp userService, UserValidator userValidator) {
         this.userService = userService;
+        this.userValidator = userValidator;
     }
 
-    @GetMapping("/")
-    public String index(Model model) {
-        return "redirect:/login";
+    @GetMapping("")
+    public String loginPage(){
+        return "user";
     }
 
-    @GetMapping("/user")
-    public String user(Model model, Principal principal) {
-        model.addAttribute("Users", List.of(userService.findUserByUserName(principal.getName())));
-        model.addAttribute("user", userService.findUserByUserName(principal.getName()));
-        return "mainPage";
+    @GetMapping("/info")
+    public String showInfo(Model model, Principal principal) {
+        User user = (User) userService.loadUserByUsername(principal.getName());
+        System.out.println(user);
+        model.addAttribute("user", user);
+        return "userInfoPage";
     }
 }

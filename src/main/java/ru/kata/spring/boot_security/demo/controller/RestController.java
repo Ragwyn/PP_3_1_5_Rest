@@ -12,13 +12,12 @@ import ru.kata.spring.boot_security.demo.util.UserValidator;
 import java.security.Principal;
 import java.util.List;
 
-@RestController
-@RequestMapping("/api")
-public class REST_Controller {
+@org.springframework.web.bind.annotation.RestController
+public class RestController {
     private final UserService userService;
     private final UserValidator userValidator;
 
-    public REST_Controller(UserService userService, UserValidator userValidator) {
+    public RestController(UserService userService, UserValidator userValidator) {
         this.userService = userService;
         this.userValidator = userValidator;
     }

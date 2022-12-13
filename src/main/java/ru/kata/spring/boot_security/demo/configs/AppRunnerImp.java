@@ -29,10 +29,10 @@ public class AppRunnerImp implements ApplicationRunner{
         List<User> users = userService.getAllUsers();
 
         if (users.isEmpty()) {
-            Role role1 = new Role(1,"ROLE_ADMIN");
+            Role role1 = new Role(1,"ROLE_ADMIN"); //("ROLE_ADMIN")
             Role role2 = new Role(2,"ROLE_USER");
-            User user1 = new User("admin", "admin", 33, "admin", "admin");
-            User user2 = new User("user", "user", 20, "user", "user");
+            User user1 = new User("admin", "admin", 31, "admin", "admin");
+            User user2 = new User("user", "user", 21, "user", "user");
             user1.setRole(Collections.singletonList(role1));
             user2.setRole(Collections.singletonList(role2));
             entityManager.persist(role1);

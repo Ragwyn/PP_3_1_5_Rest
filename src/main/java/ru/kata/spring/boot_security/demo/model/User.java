@@ -4,7 +4,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -32,6 +31,7 @@ public class User implements UserDetails {
             , inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private List<Role> role;
 
+
     public User() {
     }
 
@@ -49,7 +49,6 @@ public class User implements UserDetails {
         this.phoneNumber = phoneNumber;
         this.password = password;
     }
-
 
 
     public long getId() {
@@ -108,7 +107,6 @@ public class User implements UserDetails {
     public void setRole(List<Role> role) {
         this.role = role;
     }
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

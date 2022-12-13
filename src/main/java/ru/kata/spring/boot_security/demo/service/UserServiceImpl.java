@@ -16,13 +16,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserServiceImp implements UserService, UserDetailsService {
+public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserDao userDao;
     private final UsersRepository usersRepository;
     private final RoleRepository rolesRepository;
 
     @Autowired
-    public UserServiceImp(UserDao userDao, UsersRepository usersRepository, RoleRepository rolesRepository) {
+    public UserServiceImpl(UserDao userDao, UsersRepository usersRepository, RoleRepository rolesRepository) {
         this.userDao = userDao;
         this.usersRepository = usersRepository;
         this.rolesRepository = rolesRepository;

@@ -4,7 +4,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 import javax.transaction.Transactional;
-import ru.kata.spring.boot_security.demo.dao.RoleDAO;
+
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
@@ -29,10 +29,10 @@ public class AppRunnerImp implements ApplicationRunner{
         List<User> users = userService.getAllUsers();
 
         if (users.isEmpty()) {
-            Role role1 = new Role(1,"ROLE_ADMIN"); //("ROLE_ADMIN")
+            Role role1 = new Role(1,"ROLE_ADMIN");
             Role role2 = new Role(2,"ROLE_USER");
-            User user1 = new User("admin", "admin", 11, "admin", "admin");
-            User user2 = new User("user", "user", 22, "user", "user");
+            User user1 = new User("admin", "admin", 33, "admin", "admin");
+            User user2 = new User("user", "user", 20, "user", "user");
             user1.setRole(Collections.singletonList(role1));
             user2.setRole(Collections.singletonList(role2));
             entityManager.persist(role1);

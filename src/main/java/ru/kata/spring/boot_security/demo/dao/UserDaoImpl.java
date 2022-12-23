@@ -13,13 +13,13 @@ import java.util.Collections;
 import java.util.List;
 
 @Component
-public class UserDaoImp implements UserDao{
+public class UserDaoImpl implements UserDao{
     @PersistenceContext
     private EntityManager em;
 
     private final PasswordEncoder passwordEncoder;
 
-    public UserDaoImp(EntityManager entityManager, @Lazy PasswordEncoder passwordEncoder) {
+    public UserDaoImpl(EntityManager entityManager, @Lazy PasswordEncoder passwordEncoder) {
         this.em = entityManager;
         this.passwordEncoder = passwordEncoder;
     }

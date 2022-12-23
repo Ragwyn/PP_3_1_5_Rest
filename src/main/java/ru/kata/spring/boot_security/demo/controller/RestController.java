@@ -29,20 +29,24 @@ public class RestController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
+
     @GetMapping("/user")
     public ResponseEntity<User> getUser(Principal principal) {
         return new ResponseEntity<>(userService.getUserByUsername(principal.getName()), HttpStatus.OK);
     }
+
 
     @GetMapping("/roles")
     public ResponseEntity<List<Role>> getAllRoles() {
         return new ResponseEntity<>(userService.listRoles(), HttpStatus.OK);
     }
 
+
     @GetMapping("/admin/{id}")
     public User getUserById(@PathVariable Integer id) {
         return userService.getUser(id);
     }
+
 
     @PostMapping(value = "/admin")
     public ResponseEntity<User> addUserAction(@RequestBody User user, BindingResult bindingResult) {

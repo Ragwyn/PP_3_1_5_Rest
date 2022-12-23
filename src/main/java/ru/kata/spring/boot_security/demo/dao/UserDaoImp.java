@@ -38,9 +38,11 @@ public class UserDaoImp implements UserDao{
     @Override
     @Transactional
     public void save(User user) {
-        Role role_user = new Role(1, "ROLE_USER");
-        user.setRole(Collections.singletonList(role_user));
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+//        Role role_user = new Role(2, "ROLE_USER");
+//        Role role_user = new Role(1, "ROLE_ADMIN");
+//        user.setRole(Collections.singletonList(role_user));
+//        user.setPassword(passwordEncoder.encode(user.getPassword()));
+//        em.persist(user);
         em.persist(user);
     }
 
@@ -51,6 +53,7 @@ public class UserDaoImp implements UserDao{
         userForUpdate.setSurname(user.getSurname());
         userForUpdate.setAge(user.getAge());
         userForUpdate.setPhoneNumber(user.getPhoneNumber());
+        userForUpdate.setRole(user.getRole());
     }
 
     @Override

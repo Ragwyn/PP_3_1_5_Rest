@@ -1,4 +1,4 @@
-package ru.kata.spring.boot_security.demo;
+/*package ru.kata.spring.boot_security.demo;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.web.client.RestTemplate;
@@ -22,4 +22,4 @@ public class Main {
         System.out.println(response);
 
     }
-}
+}*/

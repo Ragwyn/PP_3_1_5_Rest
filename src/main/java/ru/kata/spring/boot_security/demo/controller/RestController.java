@@ -13,6 +13,7 @@ import java.security.Principal;
 import java.util.List;
 
 @org.springframework.web.bind.annotation.RestController
+@RequestMapping("/api")
 public class RestController {
     private final UserService userService;
     private final UserValidator userValidator;
@@ -47,8 +48,8 @@ public class RestController {
     public ResponseEntity<User> addUserAction(@RequestBody User user, BindingResult bindingResult) {
         System.out.println(user);
         userValidator.validate(user, bindingResult);
-        if (bindingResult.hasErrors()){
-            return  new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         userService.save(user);
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -56,10 +57,10 @@ public class RestController {
 
     @PutMapping("/admin")
     public ResponseEntity<User> updateUser(@RequestBody User user, BindingResult bindingResult) {
-        if (!user.getUsername().equals(userService.getUser(user.getId()).getUsername())){
+        if (!user.getUsername().equals(userService.getUser(user.getId()).getUsername())) {
             userValidator.validate(user, bindingResult);
-            if (bindingResult.hasErrors()){
-                return  new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            if (bindingResult.hasErrors()) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         }
 
